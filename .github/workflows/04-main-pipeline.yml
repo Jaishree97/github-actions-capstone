@@ -62,18 +62,18 @@ jobs:
 
     steps:
 
-      # Scan image and generate security report
+      # Generate vulnerability report
       - name: Generate Trivy report
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ needs.docker-build.outputs.image_url }}
+          image-ref: "jaishreechaure/task-manager-api:latest"
           format: table
           output: trivy-report.txt
           severity: CRITICAL
           ignore-unfixed: true
           exit-code: "0"
 
-      # Upload security report as GitHub Actions artifact
+      # Upload report as artifact
       - name: Upload Trivy report
         uses: actions/upload-artifact@v4
         with:
@@ -81,11 +81,11 @@ jobs:
           path: trivy-report.txt
           retention-days: 7
 
-      # Fail pipeline if CRITICAL vulnerabilities are found
+      # Fail pipeline if CRITICAL vulnerabilities exist
       - name: Security gate - check CRITICAL vulnerabilities
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ needs.docker-build.outputs.image_url }}
+          image-ref: "jaishreechaure/task-manager-api:latest"
           format: table
           severity: CRITICAL
           ignore-unfixed: true

@@ -1,0 +1,70 @@
+name: Main CI/CD Pipeline
+
+# Run when code is pushed to main
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+
+  # Job 1: Build and test application
+  build-test:
+    name: Build & Test
+    uses: ./.github/workflows/01-reusable-build-test.yml
+    with:
+      node_version: "22"
+      run_tests: true
+
+
+  # Generate short commit SHA for Docker image tag
+  generate-sha:
+    name: Generate Short SHA
+    runs-on: ubuntu-latest
+
+    outputs:
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+
+    steps:
+      - name: Create short SHA
+        id: vars
+        run: |
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+
+  # Job 2: Build and push Docker image
+  docker-build:
+    name: Docker Build & Push
+
+    needs:
+      - build-test
+      - generate-sha
+
+    uses: ./.github/workflows/02-reusable-docker.yml
+
+    with:
+      image_name: task-manager-api
+      tag: sha-${{ needs.generate-sha.outputs.short_sha }}
+
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_token: ${{ secrets.DOCKER_TOKEN }}
+
+
+  # Job 3: Deploy after Docker image is built
+  deploy:
+    name: Deploy to Production
+    needs: docker-build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - name: Deployment summary
+        run: |
+          echo "Deploying image: ${{ needs.docker-build.outputs.image_url }} to production"
+          echo "Environment: production"

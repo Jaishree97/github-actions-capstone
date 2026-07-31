@@ -28,3 +28,67 @@ GET /health
 ## PR Validation
 
 Pull requests to `main` are automatically validated using the reusable build and test workflow.
+
+
+
+## 🏗️ CI/CD Pipeline Architecture
+
+```mermaid
+flowchart LR
+
+    %% =========================
+    %% PR VALIDATION PIPELINE
+    %% =========================
+    subgraph PR["🔀 Pull Request Pipeline"]
+        direction LR
+
+        A["👩‍💻 Pull Request<br/>to main"]
+        B["🔨 Build"]
+        C["🧪 Test<br/>/health"]
+        D["✅ PR Checks<br/>Passed"]
+
+        A --> B --> C --> D
+    end
+
+
+    %% =========================
+    %% MAIN CI/CD PIPELINE
+    %% =========================
+    subgraph MAIN["🚀 Main Branch CI/CD Pipeline"]
+        direction LR
+
+        E["🔀 Merge / Push<br/>to main"]
+        F["🔨 Build"]
+        G["🧪 Test"]
+        H["🐳 Docker<br/>Build"]
+        I["📦 Docker Hub<br/>Push"]
+        J["🌐 Production<br/>Environment"]
+        K["🚀 Deploy"]
+
+        E --> F --> G --> H --> I --> J --> K
+    end
+
+
+    %% =========================
+    %% HEALTH CHECK PIPELINE
+    %% =========================
+    subgraph HEALTH["❤️ Scheduled Health Monitoring"]
+        direction LR
+
+        L["⏰ Every 12 Hours"]
+        M["🐳 Pull<br/>latest image"]
+        N["🗄️ Start MongoDB"]
+        O["🚀 Start App<br/>Container"]
+        P["🔍 GET /health"]
+        Q{"HTTP 200?"}
+        R["✅ PASSED"]
+        S["❌ FAILED"]
+        T["📋 GitHub<br/>Step Summary"]
+
+        L --> M --> N --> O --> P --> Q
+        Q -->|Yes| R
+        Q -->|No| S
+        R --> T
+        S --> T
+    end
+```

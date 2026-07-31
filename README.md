@@ -20,3 +20,8 @@ The project uses a Node.js and Express Task Manager application with MongoDB.
 
 ```text
 GET /health
+```
+
+## PR Validation
+
+Pull requests to `main` are automatically validated using the reusable build and test workflow.

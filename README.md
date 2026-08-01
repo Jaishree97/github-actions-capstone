@@ -36,59 +36,61 @@ Pull requests to `main` are automatically validated using the reusable build and
 ```mermaid
 flowchart LR
 
-    %% =========================
-    %% PR VALIDATION PIPELINE
-    %% =========================
-    subgraph PR["🔀 Pull Request Pipeline"]
-        direction LR
+%% =========================
+%% PR PIPELINE
+%% =========================
+subgraph PR["🔀 Pull Request Pipeline"]
+direction LR
 
-        A["👩‍💻 Pull Request<br/>to main"]
-        B["🔨 Build"]
-        C["🧪 Test<br/>/health"]
-        D["✅ PR Checks<br/>Passed"]
+A["👩‍💻 PR → main"]
+B["📦 Reusable Build & Test"]
+C["🧪 Health Test"]
+D["✅ PR Validation"]
 
-        A --> B --> C --> D
-    end
+A --> B --> C --> D
 
+end
 
-    %% =========================
-    %% MAIN CI/CD PIPELINE
-    %% =========================
-    subgraph MAIN["🚀 Main Branch CI/CD Pipeline"]
-        direction LR
+%% =========================
+%% MAIN PIPELINE
+%% =========================
+subgraph MAIN["🚀 Main CI/CD Pipeline"]
+direction LR
 
-        E["🔀 Merge / Push<br/>to main"]
-        F["🔨 Build"]
-        G["🧪 Test"]
-        H["🐳 Docker<br/>Build"]
-        I["📦 Docker Hub<br/>Push"]
-        J["🌐 Production<br/>Environment"]
-        K["🚀 Deploy"]
+E["🔀 Push / Merge → main"]
+F["📦 Reusable Build & Test"]
+G["🏷️ Generate Short SHA"]
+H["🐳 Reusable Docker Build & Push"]
+I["🔒 Trivy Security Scan"]
+J{"Critical CVEs?"}
+K["🚀 Deploy to Production"]
+L["❌ Stop Pipeline"]
 
-        E --> F --> G --> H --> I --> J --> K
-    end
+E --> F --> G --> H --> I --> J
+J -->|No| K
+J -->|Yes| L
 
+end
 
-    %% =========================
-    %% HEALTH CHECK PIPELINE
-    %% =========================
-    subgraph HEALTH["❤️ Scheduled Health Monitoring"]
-        direction LR
+%% =========================
+%% HEALTH CHECK
+%% =========================
+subgraph HEALTH["❤️ Scheduled Health Monitoring"]
+direction LR
 
-        L["⏰ Every 12 Hours"]
-        M["🐳 Pull<br/>latest image"]
-        N["🗄️ Start MongoDB"]
-        O["🚀 Start App<br/>Container"]
-        P["🔍 GET /health"]
-        Q{"HTTP 200?"}
-        R["✅ PASSED"]
-        S["❌ FAILED"]
-        T["📋 GitHub<br/>Step Summary"]
+M["⏰ Every 12 Hours"]
+N["📥 Pull Latest Image"]
+O["🗄️ Start MongoDB"]
+P["🚀 Start Application"]
+Q["🔍 GET /health"]
+R{"HTTP 200?"}
+S["✅ Healthy"]
+T["❌ Unhealthy"]
+U["📋 GitHub Step Summary"]
 
-        L --> M --> N --> O --> P --> Q
-        Q -->|Yes| R
-        Q -->|No| S
-        R --> T
-        S --> T
-    end
+M --> N --> O --> P --> Q --> R
+R -->|Yes| S --> U
+R -->|No| T --> U
+
+end
 ```

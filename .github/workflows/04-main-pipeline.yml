@@ -54,26 +54,43 @@ jobs:
       docker_token: ${{ secrets.DOCKER_TOKEN }}
 
 
-  # Brownie Point: Scan Docker image for vulnerabilities
+    # Brownie Point: Scan Docker image for vulnerabilities
   trivy-scan:
     name: Trivy Security Scan
     needs: docker-build
     runs-on: ubuntu-latest
 
     steps:
+      # Install Trivy
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
 
-      # Generate vulnerability report
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+            | gpg --dearmor \
+            | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | sudo tee /etc/apt/sources.list.d/trivy.list
+
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
+          trivy --version
+
+      # Generate report without failing pipeline
       - name: Generate Trivy report
-        uses: aquasecurity/trivy-action@0.35.0
-        with:
-          image-ref: "jaishreechaure/task-manager-api:latest"
-          format: table
-          output: trivy-report.txt
-          severity: CRITICAL
-          ignore-unfixed: true
-          exit-code: "0"
+        run: |
+          trivy image \
+            --severity CRITICAL \
+            --ignore-unfixed \
+            --exit-code 0 \
+            --format table \
+            --output trivy-report.txt \
+            jaishreechaure/task-manager-api:latest
 
-      # Upload report as artifact
+      # Upload scan report
       - name: Upload Trivy report
         uses: actions/upload-artifact@v4
         with:
@@ -81,15 +98,14 @@ jobs:
           path: trivy-report.txt
           retention-days: 7
 
-      # Fail pipeline if CRITICAL vulnerabilities exist
+      # Security gate
       - name: Security gate - check CRITICAL vulnerabilities
-        uses: aquasecurity/trivy-action@0.35.0
-        with:
-          image-ref: "jaishreechaure/task-manager-api:latest"
-          format: table
-          severity: CRITICAL
-          ignore-unfixed: true
-          exit-code: "1"
+        run: |
+          trivy image \
+            --severity CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1 \
+            jaishreechaure/task-manager-api:latest
 
 
   # Job 3: Deploy only after security scan passes

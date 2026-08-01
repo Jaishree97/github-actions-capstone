@@ -7,6 +7,7 @@ on:
       - main
 
 permissions:
+   # Read-only access is sufficient for this workflow
   contents: read
 
 jobs:

@@ -31,66 +31,78 @@ Pull requests to `main` are automatically validated using the reusable build and
 
 
 
-## 🏗️ CI/CD Pipeline Architecture
+## 🏗️ DevSecOps Pipeline Architecture
 
 ```mermaid
 flowchart LR
 
-%% =========================
-%% PR PIPELINE
-%% =========================
-subgraph PR["🔀 Pull Request Pipeline"]
+%% =====================================================
+%% Pull Request Validation
+%% =====================================================
+subgraph PR["🔀 Pull Request Validation"]
+
 direction LR
 
-A["👩‍💻 PR → main"]
+A["👩‍💻 Feature Branch"]
 B["📦 Reusable Build & Test"]
-C["🧪 Health Test"]
-D["✅ PR Validation"]
+C["🔍 Dependency Review"]
+D["✅ PR Summary"]
 
 A --> B --> C --> D
 
 end
 
-%% =========================
-%% MAIN PIPELINE
-%% =========================
+%% =====================================================
+%% Main CI/CD Pipeline
+%% =====================================================
 subgraph MAIN["🚀 Main CI/CD Pipeline"]
+
 direction LR
 
-E["🔀 Push / Merge → main"]
+E["🔀 Merge / Push → main"]
 F["📦 Reusable Build & Test"]
 G["🏷️ Generate Short SHA"]
-H["🐳 Reusable Docker Build & Push"]
-I["🔒 Trivy Security Scan"]
-J{"Critical CVEs?"}
-K["🚀 Deploy to Production"]
-L["❌ Stop Pipeline"]
+H["🐳 Docker Build & Push"]
+I["📦 Docker Hub"]
+J["🛡️ Trivy Security Scan"]
+K{"Critical CVEs?"}
+L["🚀 Deploy to Production"]
+M["❌ Stop Deployment"]
 
-E --> F --> G --> H --> I --> J
-J -->|No| K
-J -->|Yes| L
+E --> F --> G --> H --> I --> J --> K
+K -->|No| L
+K -->|Yes| M
 
 end
 
-%% =========================
-%% HEALTH CHECK
-%% =========================
-subgraph HEALTH["❤️ Scheduled Health Monitoring"]
+%% =====================================================
+%% Scheduled Health Monitoring
+%% =====================================================
+subgraph HEALTH["❤️ Scheduled Health Check"]
+
 direction LR
 
-M["⏰ Every 12 Hours"]
-N["📥 Pull Latest Image"]
-O["🗄️ Start MongoDB"]
-P["🚀 Start Application"]
-Q["🔍 GET /health"]
-R{"HTTP 200?"}
-S["✅ Healthy"]
-T["❌ Unhealthy"]
-U["📋 GitHub Step Summary"]
+N["⏰ Every 12 Hours"]
+O["📥 Pull Latest Image"]
+P["🗄️ Start MongoDB"]
+Q["🚀 Start Application"]
+R["🔍 GET /health"]
+S["📋 GitHub Step Summary"]
 
-M --> N --> O --> P --> Q --> R
-R -->|Yes| S --> U
-R -->|No| T --> U
+N --> O --> P --> Q --> R --> S
+
+end
+
+%% =====================================================
+%% Repository Security
+%% =====================================================
+subgraph SECURITY["🔐 Repository Security"]
+
+direction TB
+
+T["🛡️ Secret Scanning"]
+U["🚫 Push Protection"]
+V["📦 Dependency Graph"]
 
 end
 ```

@@ -1,6 +1,6 @@
 name: PR Pipeline
 
-# Run when PR targets main
+# Run when a pull request targets the main branch
 on:
   pull_request:
     branches:
@@ -8,14 +8,16 @@ on:
     types:
       - opened
       - synchronize
+      - reopened
 
-# Required workflow permissions
+# Minimum required permissions
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
 
-  # Call reusable build and test workflow
+  # Job 1: Build and test the application
   build-test:
     name: Build & Test
     uses: ./.github/workflows/01-reusable-build-test.yml
@@ -23,16 +25,38 @@ jobs:
       node_version: "22"
       run_tests: true
 
-  # Print PR test summary
-  pr-comment:
-    name: PR Summary
-    needs:
-      - build-test
+  # Job 2: Review new dependencies for vulnerabilities
+  # Runs only after Build & Test succeeds
+  dependency-review:
+    name: Dependency Review
+    needs: build-test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print PR summary
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Scan Dependencies
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: critical
+
+  # Job 3: Print workflow summary
+  pr-summary:
+    name: PR Summary
+    needs:
+      - build-test
+      - dependency-review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print PR Summary
         run: |
-          echo "PR checks passed for branch: ${{ github.head_ref }}"
-          echo "Test result: ${{ needs.build-test.outputs.test_result }}"
-          echo "Commit: ${{ github.sha }}"
+          echo "=================================="
+          echo "✅ Pull Request Validation Passed"
+          echo "=================================="
+          echo "Branch      : ${{ github.head_ref }}"
+          echo "Commit SHA  : ${{ github.sha }}"
+          echo "Test Result : ${{ needs.build-test.outputs.test_result }}"
+          echo "Dependency Review : PASSED"
+          echo "=================================="

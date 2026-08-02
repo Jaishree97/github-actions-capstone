@@ -1,72 +1,64 @@
-# Task Manager API — Dockerized with Node.js & MongoDB
+<h1 align="center">
+📦 Task Manager API
+</h1>
 
-A simple **Task Manager REST API** built with **Node.js**, **Express.js**, and **MongoDB**. The application is fully containerized using **Docker** and orchestrated with **Docker Compose** as part of the **90 Days of DevOps** challenge.
+<p align="center">
+Dockerized REST API built with Node.js • Express.js • MongoDB • Docker Compose
+</p>
 
-![Node.js](https://img.shields.io/badge/Node.js-22-green)
-![Express](https://img.shields.io/badge/Express-4.x-black)
-![MongoDB](https://img.shields.io/badge/MongoDB-8-green)
-![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![Docker Compose](https://img.shields.io/badge/Docker%20Compose-v2-blue)
-
----
-
-# What the Application Does
-
-This application provides a REST API for managing tasks.
-
-### Features
-
-- Create new tasks
-- Retrieve all tasks
-- Update existing tasks
-- Delete tasks
-- Store task data in MongoDB
-- Deploy the complete application using Docker Compose
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-22-green">
+  <img src="https://img.shields.io/badge/Express-4.x-black">
+  <img src="https://img.shields.io/badge/MongoDB-8-green">
+  <img src="https://img.shields.io/badge/Docker-Ready-blue">
+  <img src="https://img.shields.io/badge/Docker%20Compose-v2-blue">
+</p>
 
 ---
 
-# Tech Stack
+## 📌 Project Overview
 
-| Component | Technology |
-|-----------|------------|
-| Runtime | Node.js 22 |
-| Framework | Express.js |
-| Database | MongoDB 8 |
-| Containerization | Docker |
-| Orchestration | Docker Compose v2 |
+This project is a Dockerized **Task Manager REST API** built with **Node.js**, **Express.js**, and **MongoDB**.
+
+It demonstrates how to containerize a full-stack backend application using Docker and Docker Compose while following production-oriented containerization best practices.
+
+The application supports complete CRUD operations for task management and serves as the deployment target for the GitHub Actions DevSecOps CI/CD Capstone Project, demonstrating how a Dockerized application can be integrated into a production-style CI/CD and DevSecOps pipeline.
 
 ---
 
-# Project Structure
+## 📑 Table of Contents
 
-```text
-task-manager-api/
-│
-├── models/
-│   └── Task.js
-│
-├── routes/
-│   └── taskRoutes.js
-│
-├── views/
-│   └── index.ejs
-│
-├── public/
-│   └── style.css
-│
-├── Dockerfile
-├── docker-compose.yml
-├── .dockerignore
-├── .gitignore
-├── package.json
-├── package-lock.json
-├── server.js
-└── README.md
-```
+- [📌 Project Overview](#-project-overview)
+- [⭐ Features](#-features)
+- [🏗️ Application Architecture](#️-application-architecture)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📂 Project Structure](#-project-structure)
+- [🚀 Quick Start](#-quick-start)
+- [⚙️ Environment Variables](#️-environment-variables)
+- [🐳 Docker Setup](#-docker-setup)
+- [📸 Deployment Preview](#-deployment-preview)
+- [📡 API Endpoints](#-api-endpoints)
+- [🧪 API Testing](#-api-testing)
+- [🐳 Docker Image](#-docker-image)
+- [🎯 Key Learnings](#-key-learnings)
 
 ---
 
-# Application Architecture
+## ⭐ Features
+
+| Feature | Description |
+|----------|-------------|
+| ✅ REST API | CRUD operations for task management |
+| 🟢 Express.js | Lightweight backend framework |
+| 🍃 MongoDB | Persistent NoSQL database |
+| 🐳 Docker | Fully containerized application |
+| ⚙️ Docker Compose | Multi-container orchestration |
+| ❤️ Health Checks | MongoDB container health monitoring |
+| 📦 Production Ready | Multi-stage Docker build with non-root user |
+
+---
+
+## 🏗️ Application Architecture
 
 ```text
               Client
@@ -83,10 +75,48 @@ task-manager-api/
                  │
       Persistent Docker Volume
 ```
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Runtime | Node.js 22 |
+| Framework | Express.js |
+| Database | MongoDB 8 |
+| Containerization | Docker |
+| Orchestration | Docker Compose v2 |
 
 ---
 
-# Prerequisites
+## 📂 Project Structure
+
+```text
+task-manager-api/
+├── models/                  # Mongoose models
+│   └── Task.js
+│
+├── routes/                  # API routes
+│   └── taskRoutes.js
+│
+├── views/                   # EJS templates
+│   └── index.ejs
+│
+├── public/                  # Static assets
+│   └── style.css
+│
+├── Dockerfile               # Multi-stage production image
+├── docker-compose.yml       # Local multi-container setup
+├── .dockerignore
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── server.js                # Application entry point
+└── README.md
+```
+---
+
+## 📋 Prerequisites
 
 Before running the project, make sure you have:
 
@@ -96,7 +126,30 @@ Before running the project, make sure you have:
 
 ---
 
-# Environment Variables
+## 🚀 Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Jaishree97/github-actions-capstone.git
+```
+### 2. Navigate to the Project
+
+```bash
+cd github-actions-capstone/task-manager-api
+```
+### 3. Build and Start the Application
+
+```bash
+docker compose up --build -d
+```
+The application will be available at:
+
+http://localhost:3000
+
+---
+
+## ⚙️ Environment Variables
 
 Create a `.env` file in the project root.
 
@@ -110,86 +163,65 @@ MONGO_URI=mongodb://mongodb:27017/taskdb
 | PORT | Port used by the application |
 | MONGO_URI | MongoDB connection string |
 
+> **Note:** Docker Compose automatically loads variables from the `.env` file when starting the application.
+
 ---
 
-# Dockerfile Highlights
+## 🐳 Docker Setup
 
-This project uses a **multi-stage Docker build**.
+### Multi-stage Docker Build
 
-### Builder Stage
+This project uses a production-style multi-stage Docker build.
 
-- Uses Node.js Alpine image
-- Installs project dependencies
-- Copies application source code
+**Builder Stage**
 
-### Production Stage
+- Installs application dependencies
+- Copies source code
+- Prepares the application
 
-- Uses lightweight Alpine image
-- Copies only required application files
+**Production Stage**
+
+- Uses a lightweight Node.js Alpine image
+- Copies only the required files
 - Creates a non-root user
 - Runs the application securely
 
-### Benefits
+### Docker Compose Services
 
-- Smaller production image
-- Faster deployments
-- Better security
-- Improved layer caching
+The application consists of two services:
 
----
+| Service | Purpose |
+|----------|---------|
+| Application | Node.js + Express REST API |
+| MongoDB | Persistent NoSQL database |
 
-# Docker Compose Services
+Docker Compose also provisions:
 
-The application consists of two containers.
-
-## Application
-
-- Node.js
-- Express.js
-- Port 3000
-
-## Database
-
-- MongoDB 8
-- Persistent Docker Volume
-- Healthcheck using `mongosh`
-
-Docker Compose also creates:
-
-- Custom Docker Network
-- Named Docker Volume
+- Custom Docker network
+- Persistent Docker volume
+- MongoDB health checks
 
 ---
 
-# Quick Start
+## 📸 Deployment Preview
 
-## 1. Clone the Repository
+### 🌐 Live Application (Amazon EC2)
 
-```bash
-git clone git@github.com:Jaishree97/90DaysOfDevOps.git
-```
+The application running successfully on an Amazon EC2 instance after deployment with Docker Compose.
 
-## 2. Navigate to the Project
-
-```bash
-cd 2026/day-36/task-manager-api
-```
-
-## 3. Build the Docker Images
-
-```bash
-docker compose build
-```
-
-## 4. Start the Application
-
-```bash
-docker compose up -d
-```
+![Application Running](./images/app-running.png)
 
 ---
 
-# Verify Running Containers
+### 🐳 Docker Deployment Verification
+
+Docker image pulled from Docker Hub, containers started with Docker Compose, and application verified using health checks and API responses.
+
+![Docker Deployment](./images/docker-deployment.png)
+
+---
+
+## ✅ Verify Running Containers
 
 ```bash
 docker compose ps
@@ -204,7 +236,7 @@ task-manager-app    Up
 
 ---
 
-# View Application Logs
+## 📜 View Application Logs
 
 ```bash
 docker compose logs app
@@ -219,23 +251,19 @@ Server running on port 3000
 
 ---
 
-# Access the Application
+## 🌐 Access the Application
 
-Local
+### Local
 
-```
-http://localhost:3000
-```
+<http://localhost:3000>
 
-EC2
+### Amazon EC2
 
-```
 http://<EC2-PUBLIC-IP>:3000
-```
 
 ---
 
-# API Endpoints
+## 📡 API Endpoints
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
@@ -247,31 +275,28 @@ http://<EC2-PUBLIC-IP>:3000
 
 ---
 
-# API Testing
+## 🧪 API Testing
 
-## Get All Tasks
+### Get All Tasks
 
 ```bash
 curl http://localhost:3000/tasks
 ```
-
-## Create Task
+### Create Task
 
 ```bash
 curl -X POST http://localhost:3000/tasks \
 -H "Content-Type: application/json" \
 -d '{"title":"Learn Docker","completed":false}'
 ```
-
-## Update Task
+### Update Task
 
 ```bash
 curl -X PUT http://localhost:3000/tasks/<TASK_ID> \
 -H "Content-Type: application/json" \
 -d '{"completed":true}'
 ```
-
-## Delete Task
+### Delete Task
 
 ```bash
 curl -X DELETE http://localhost:3000/tasks/<TASK_ID>
@@ -279,64 +304,78 @@ curl -X DELETE http://localhost:3000/tasks/<TASK_ID>
 
 ---
 
-# Docker Hub
+## 🐳 Docker Image
 
-Repository
+### Docker Hub Repository
 
-```text
-jaishreechaure/task-manager-api
-```
+[jaishreechaure/task-manager-api](https://hub.docker.com/r/jaishreechaure/task-manager-api)
 
-Image
-
-```text
-jaishreechaure/task-manager-api:v1
-```
-
-Pull the image
+**Pull the latest image**
 
 ```bash
-docker pull jaishreechaure/task-manager-api:v1
+docker pull jaishreechaure/task-manager-api:latest
 ```
 
 ---
 
-# Deployment Verification
+## ✅ Deployment Verification
 
-The published Docker image was verified by:
+The published Docker image was validated using the following deployment workflow:
 
 - Pulling the image from Docker Hub
-- Starting containers using Docker Compose
+- Starting the application using Docker Compose
 - Connecting successfully to MongoDB
 - Verifying the REST API endpoints
+- Accessing the application from a web browser
 
 ---
 
-# Docker Best Practices Used
+## 🔐 Docker Best Practices
 
-- Multi-stage Docker Build
-- Alpine Linux Base Image
-- Non-root User
-- Docker Compose
-- Custom Docker Network
-- Named Docker Volume
-- MongoDB Healthcheck
-- Environment Variables
-- Lightweight Production Image
+- ✅ Multi-stage Docker build
+- ✅ Non-root user
+- ✅ Lightweight production image
+- ✅ Environment variables
+- ✅ Docker Compose orchestration
+- ✅ Named volumes
+- ✅ Custom bridge network
+- ✅ MongoDB health checks
 
 ---
 
-# Learning Outcomes
+## 🎯 Key Learnings
 
-Through this project I learned:
+- ✅ Building Docker images
+- ✅ Creating multi-stage Docker builds
+- ✅ Docker Compose orchestration
+- ✅ Managing persistent Docker volumes
+- ✅ Implementing container health checks
+- ✅ Publishing images to Docker Hub
+- ✅ Deploying production-style containers
 
-- Building Docker images
-- Multi-stage Docker builds
-- Docker Compose orchestration
-- MongoDB containerization
-- Docker networking and service communication
-- Persistent Docker volumes
-- Container healthchecks
-- Publishing Docker images to Docker Hub
-- Production-style deployments
-- Container troubleshooting
+---
+
+## 🔗 Related Project
+
+This application is used as the deployment target for my production-style GitHub Actions DevSecOps pipeline.
+
+➡️ **GitHub Actions DevSecOps CI/CD Capstone**
+
+[View the complete GitHub Actions DevSecOps CI/CD Pipeline](https://github.com/Jaishree97/github-actions-capstone)
+
+This repository demonstrates a complete production-style GitHub Actions CI/CD pipeline featuring reusable workflows, Docker automation, Trivy vulnerability scanning, Dependabot, SARIF code scanning, scheduled health checks, and deployment automation using this Task Manager API.
+
+---
+
+## 👩‍💻 Connect With Me
+
+- 💼 **LinkedIn:** <https://www.linkedin.com/in/jaishree-chaure>
+- 💻 **GitHub:** <https://github.com/Jaishree97>
+
+---
+
+⭐ If you found this project helpful, consider giving it a star.
+
+If you have suggestions, ideas for improvement, or would like to contribute, feel free to open an issue or submit a pull request.
+
+Happy Learning! 🚀

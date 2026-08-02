@@ -209,7 +209,7 @@ Docker Compose also provisions:
 
 The application running successfully on an Amazon EC2 instance after deployment with Docker Compose.
 
-![Application Running](./images/app-running.png)
+![Application Running](../images/app-running.png)
 
 ---
 
@@ -217,7 +217,7 @@ The application running successfully on an Amazon EC2 instance after deployment 
 
 Docker image pulled from Docker Hub, containers started with Docker Compose, and application verified using health checks and API responses.
 
-![Docker Deployment](./images/docker-deployment.png)
+![Docker Deployment](../images/docker-deployment.png)
 
 ---
 

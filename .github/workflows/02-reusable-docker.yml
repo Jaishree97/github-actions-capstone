@@ -41,7 +41,7 @@ jobs:
     steps:
       # Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Setup Docker Buildx
       - name: Set up Docker Buildx

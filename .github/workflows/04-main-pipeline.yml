@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: jaishreechaure/task-manager-api:sha-${{ needs.generate-sha.outputs.short_sha }}
           format: sarif
